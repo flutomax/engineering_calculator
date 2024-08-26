@@ -3,8 +3,8 @@ unit uFrmCalc;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, StdCtrls, Math, jpeg, ExtCtrls, Vcl.Buttons;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, 
+	Menus, StdCtrls, Math, ExtCtrls, Buttons;
 
 type
   TBinaryOperation = (bopAdd, bopSub, bopMul, bopDiv, bopPow, bopFMod);
