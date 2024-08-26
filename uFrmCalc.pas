@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, 
-	Menus, StdCtrls, Math, ExtCtrls, Buttons;
+  Menus, StdCtrls, Math, ExtCtrls, Buttons;
 
 type
   TBinaryOperation = (bopAdd, bopSub, bopMul, bopDiv, bopPow, bopFMod);
@@ -131,8 +131,8 @@ implementation
 
 const
 
-  sDivZero = 'Попытка деления на 0.';
-  sAbout = 'Инженерный калькулятор v1.0'#13#10'© 2024 Василий Макаров.';
+  sDivZero = 'РџРѕРїС‹С‚РєР° РґРµР»РµРЅРёСЏ РЅР° 0.';
+  sAbout = 'РРЅР¶РµРЅРµСЂРЅС‹Р№ РєР°Р»СЊРєСѓР»СЏС‚РѕСЂ v1.0'#13#10'В© 2024 Р’Р°СЃРёР»РёР№ РњР°РєР°СЂРѕРІ.';
 
 procedure TFrmCalc.FormCreate(Sender: TObject);
 begin
@@ -443,7 +443,7 @@ procedure TFrmCalc.SetUnaryOperation(aOperation: TUnaryOperation);
       exit;
     if (fOperand <= 1) and (fOperand >= -1) then
       exit;
-    MessageDlg('Значения не определено.', mtWarning, [mbCancel], 0);
+    MessageDlg('Р—РЅР°С‡РµРЅРёСЏ РЅРµ РѕРїСЂРµРґРµР»РµРЅРѕ.', mtWarning, [mbCancel], 0);
     result := false;
   end;
 
