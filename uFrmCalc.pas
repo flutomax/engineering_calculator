@@ -3,8 +3,8 @@ unit uFrmCalc;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, 
-  Menus, StdCtrls, Math, ExtCtrls, Buttons;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Menus, StdCtrls, Math, ExtCtrls, Buttons;
 
 type
   TBinaryOperation = (bopAdd, bopSub, bopMul, bopDiv, bopPow, bopFMod);
@@ -124,7 +124,6 @@ var
   FrmCalc: TFrmCalc;
 
 
-
 implementation
 
 {$R *.dfm}
@@ -133,6 +132,15 @@ const
 
   sDivZero = 'Попытка деления на 0.';
   sAbout = 'Инженерный калькулятор v1.0'#13#10'© 2024 Василий Макаров.';
+
+function StrToExtended(const s: string): extended;
+var
+  e: integer;
+begin
+  Val(s, result, e);
+  if e <> 0 then
+    result := 0;
+end;
 
 procedure TFrmCalc.FormCreate(Sender: TObject);
 begin
@@ -258,7 +266,7 @@ end;
 procedure TFrmCalc.SetBinaryOperation(aOperation: TBinaryOperation);
 begin
   fOperation := aOperation;
-  fOperand := StrToFloat(Editor.Text);
+  fOperand := StrToExtended(Editor.Text);
   fNext := true;
 end;
 
@@ -283,11 +291,10 @@ procedure TFrmCalc.BtnMPClick(Sender: TObject);
 var
   a: Extended;
 begin
-  a := StrToFloat(fMemory) + StrToFloat(Editor.Text);
-  fMemory := FloatToStr(a);
+  a := StrToExtended(fMemory) + StrToExtended(Editor.Text);
+  fMemory := FloatToStr(a, TFormatSettings.Invariant);
   PnlMem.Caption := 'M';
 end;
-
 
 procedure TFrmCalc.HandleDigit(aDigit: char);
 begin
@@ -408,7 +415,7 @@ procedure TFrmCalc.BtnResultClick(Sender: TObject);
 var
   operand2, result: extended;
 begin
-  operand2 := StrToFloat(Editor.Text);
+  operand2 := StrToExtended(Editor.Text);
   if not CheckDivZero(operand2) then
     exit;
   fNext := true;
@@ -420,7 +427,7 @@ begin
     bopPow: result := Power(fOperand, operand2);
     bopFMod: result := FMod(fOperand, operand2);
   end;
-  Editor.Text := FloatToStr(result);
+  Editor.Text := FloatToStr(result, TFormatSettings.Invariant);
 end;
 
 procedure TFrmCalc.SetUnaryOperation(aOperation: TUnaryOperation);
@@ -457,31 +464,33 @@ procedure TFrmCalc.SetUnaryOperation(aOperation: TUnaryOperation);
       fOperand := (fOperand * Pi) / 200;
   end;
 
+var
+  operand: extended;
 begin
-  fOperand := StrToFloat(Editor.Text);
+  operand := StrToExtended(Editor.Text);
   if not CheckDivZero then
     exit;
   if not CheckArcArgument then
     exit;
   BringArgument;
   case aOperation of
-    uopSgn: fOperand := 0 - fOperand;
-    uop1DivX: fOperand := 1 / fOperand;
-    uopExp: fOperand := Exp(fOperand);
-    uopLn: fOperand := ln(fOperand);
-    uopLog10: fOperand := Log10(fOperand);
-    uopSqr: fOperand := Sqr(fOperand);
-    uopSqrt: fOperand := Sqrt(fOperand);
-    uopSin: fOperand := Sin(fOperand);
-    uopCos: fOperand := Cos(fOperand);
-    uopTan: fOperand := Tan(fOperand);
-    uopCotan: fOperand := Cotan(fOperand);
-    uopArcSin: fOperand := ArcSin(fOperand);
-    uopArcCos: fOperand := ArcCos(fOperand);
-    uopArcTan: fOperand := ArcTan(fOperand);
-    uopArcCot: fOperand := ArcCot(fOperand);
+    uopSgn: operand := 0 - operand;
+    uop1DivX: operand := 1 / operand;
+    uopExp: operand := Exp(operand);
+    uopLn: operand := ln(operand);
+    uopLog10: operand := Log10(operand);
+    uopSqr: operand := Sqr(operand);
+    uopSqrt: operand := Sqrt(operand);
+    uopSin: operand := Sin(operand);
+    uopCos: operand := Cos(operand);
+    uopTan: operand := Tan(operand);
+    uopCotan: operand := Cotan(operand);
+    uopArcSin: operand := ArcSin(operand);
+    uopArcCos: operand := ArcCos(operand);
+    uopArcTan: operand := ArcTan(operand);
+    uopArcCot: operand := ArcCot(operand);
   end;
-  Editor.Text := FloatToStr(fOperand);
+  Editor.Text := FloatToStr(operand, TFormatSettings.Invariant);
 end;
 
 procedure TFrmCalc.BtnSignClick(Sender: TObject);
@@ -561,14 +570,14 @@ end;
 
 procedure TFrmCalc.BtnPiClick(Sender: TObject);
 begin
-  Editor.Text := FloatToStr(Pi);
+  Editor.Text := FloatToStr(Pi, TFormatSettings.Invariant);
 end;
 
 procedure TFrmCalc.BtnEClick(Sender: TObject);
 const
   e = 2.718281828459045;
 begin
-  Editor.Text := FloatToStr(e);
+  Editor.Text := FloatToStr(e, TFormatSettings.Invariant);
 end;
 
 procedure TFrmCalc.BtnCClick(Sender: TObject);
@@ -580,7 +589,7 @@ end;
 
 procedure TFrmCalc.BtnPointClick(Sender: TObject);
 begin
-  Editor.Text := Editor.Text + FormatSettings.DecimalSeparator;
+  Editor.Text := Editor.Text + '.';
 end;
 
 procedure TFrmCalc.HandlePressed(aButton: TButton);
@@ -606,8 +615,5 @@ begin
     fLastPressedButton := nil;
   end;
 end;
-
-initialization
-  FormatSettings := TFormatSettings.Create('en_US');
 
 end.
